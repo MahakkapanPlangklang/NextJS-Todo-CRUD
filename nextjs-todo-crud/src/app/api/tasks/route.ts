@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import clientPromise from '../../../lib/mongodb';
-import { ObjectId } from 'mongodb';
+import { ObjectId } from 'bson'; // เปลี่ยนการนำเข้าเป็น 'bson'
 
 export async function GET() {
     try {
@@ -19,6 +19,7 @@ export async function GET() {
     }
 }
 
+// ฟังก์ชันสำหรับ POST
 export async function POST(request: Request) {
     try {
         const client = await clientPromise;
@@ -26,7 +27,14 @@ export async function POST(request: Request) {
         const db = client.db(dbName);
         
         const body = await request.json();
-        const result = await db.collection('tasks').insertOne(body);
+
+        // สร้าง ObjectId ใหม่
+        const newTask = {
+            ...body,
+            _id: new ObjectId() // สร้าง ObjectId ใหม่
+        };
+
+        const result = await db.collection('tasks').insertOne(newTask);
 
         return NextResponse.json(result);
     } catch (error) {
@@ -45,7 +53,7 @@ export async function PUT(request: Request) {
         const { id, status } = body;
 
         const result = await db.collection('tasks').updateOne(
-            { _id: new ObjectId(id) }, 
+            { _id: new ObjectId(id) }, // ใช้ ObjectId เพื่อค้นหา
             { $set: { status } }
         );
 
@@ -63,7 +71,7 @@ export async function DELETE(request: Request) {
         const db = client.db(dbName);
         
         const { id } = await request.json();
-        const result = await db.collection('tasks').deleteOne({ _id: new ObjectId(id) }); 
+        const result = await db.collection('tasks').deleteOne({ _id: new ObjectId(id) }); // ใช้ ObjectId
 
         return NextResponse.json(result);
     } catch (error) {
