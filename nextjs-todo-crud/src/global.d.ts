@@ -1,7 +1,7 @@
 import { MongoClient } from 'mongodb';
 
 declare global {
-    var _mongoClientPromise: Promise<typeof MongoClient> | undefined;
+    let _mongoClientPromise: Promise<MongoClient> | undefined;  // เปลี่ยนจาก var เป็น let
 }
 
 export {};
