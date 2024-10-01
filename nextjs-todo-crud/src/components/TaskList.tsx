@@ -1,9 +1,9 @@
-"use client"; // เพิ่มบรรทัดนี้เพื่อให้สามารถใช้ React Hooks ได้
+"use client"; 
 
 import { useEffect, useState } from 'react';
 
 interface Task {
-    _id: string; // ใช้ _id จาก MongoDB
+    _id: string;
     title: string;
     description: string;
     status: string;
@@ -39,7 +39,7 @@ const TaskList: React.FC<{ refresh: boolean }> = ({ refresh }) => {
         });
 
         if (res.ok) {
-            fetchTasks(); // เรียกข้อมูลใหม่เพื่ออัปเดต UI
+            fetchTasks(); 
         } else {
             const errorData = await res.json();
             console.error("Failed to update task:", errorData);
@@ -56,7 +56,7 @@ const TaskList: React.FC<{ refresh: boolean }> = ({ refresh }) => {
         });
 
         if (res.ok) {
-            fetchTasks(); // เรียกข้อมูลใหม่หลังจากลบงาน
+            fetchTasks(); 
         } else {
             const errorData = await res.json();
             console.error("Failed to delete task:", errorData);
@@ -64,7 +64,7 @@ const TaskList: React.FC<{ refresh: boolean }> = ({ refresh }) => {
     };
 
     useEffect(() => {
-        fetchTasks(); // เรียกข้อมูลเมื่อตอนเริ่มต้น
+        fetchTasks(); 
     }, [refresh]);
 
     return (
@@ -77,7 +77,7 @@ const TaskList: React.FC<{ refresh: boolean }> = ({ refresh }) => {
                             <div className={task.status === 'เสร็จ' ? 'strikethrough' : ''}>
                                 <strong style={{ color: 'black' }}>{task.title}</strong>: <span style={{ color: 'black' }}>{task.description}</span>
                             </div>
-                            <span className="status" style={{ color: 'black' }}>{task.status}</span>
+                            <span className="status" style={{ color: 'black', width: '100px', textAlign: 'center' }}>{task.status}</span>
                             <div>
                                 <button onClick={() => updateTaskStatus(task._id, task.status)}>
                                     {task.status === 'เสร็จ' ? 'กลับไปยังไม่เสร็จ' : 'ทำเสร็จ'}
