@@ -1,15 +1,22 @@
-import { MongoClient } from 'mongodb';
+const { MongoClient } = require('mongodb');
 
-const uri = process.env.MONGO_URI as string;
+const uri = process.env.MONGO_URI || '';  // นำเข้า URI จาก .env
+const client = new MongoClient(uri);
 
-let client;
-let clientPromise: Promise<MongoClient>;
+let clientPromise: Promise<any> = Promise.resolve();  // กำหนดค่าเริ่มต้นให้เป็น Promise.resolve()
 
-if (process.env.NODE_ENV === 'development') {
-    client = new MongoClient(uri);
-    clientPromise = client.connect();
-} else {
-    clientPromise = MongoClient.connect(uri);
+if (!uri) {
+    throw new Error("Please add your Mongo URI to .env.local");
 }
 
-export default clientPromise;
+if (process.env.NODE_ENV === 'development') {
+    // ตรวจสอบว่ามีการกำหนด _mongoClientPromise ใน global หรือไม่
+    if (!global._mongoClientPromise) {
+        global._mongoClientPromise = client.connect();
+    }
+    clientPromise = global._mongoClientPromise || Promise.resolve();  // กำหนดให้ clientPromise เป็น Promise เสมอ
+} else {
+    clientPromise = client.connect();
+}
+
+module.exports = clientPromise;
