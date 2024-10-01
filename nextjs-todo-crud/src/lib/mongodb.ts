@@ -10,6 +10,7 @@ if (!uri) {
 }
 
 if (process.env.NODE_ENV === 'development') {
+    // ใช้ global._mongoClientPromise อย่างปลอดภัย
     if (!global._mongoClientPromise) {
         global._mongoClientPromise = client.connect();
     }
